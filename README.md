@@ -40,3 +40,23 @@ You can check if the event was produced creating a console consumer:
 ```bash
 kafka-console-consumer --bootstrap-server localhost:9092 --topic input-data --from-beginning
 ```
+
+## Running Ingestor
+
+Build the docker image for the ingestor. To run the docker image, the key "bootstrap.servers" on kafka.ConfigMap must have the value "broker:29092" if you are running [Confluent Platform's Kafka](https://docs.confluent.io/platform/current/platform-quickstart.html); more on **KAFKA_LISTENERS** AND **KAFKA__ADVERTISED_LISTENERS** [here](https://stackoverflow.com/questions/61990336/kafka-consumer-failed-to-start-connection-refused-connect2-for-127-0-0-1) and [here](https://rmoff.net/2018/08/02/kafka-listeners-explained/):
+
+```bash
+docker build . -t go-data-platform ingestor .
+```
+
+Check which network kafka broker is running on:
+
+```bash
+docker inspect broker
+```
+
+Get the value on **NetworkSettings > Networks** and run the image passing its value after --network:
+
+```bash
+docker run --network <network-name> go-data-platform/ingestor --name ingestor
+```
