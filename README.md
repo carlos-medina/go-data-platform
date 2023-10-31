@@ -58,5 +58,5 @@ docker inspect broker
 Get the value on **NetworkSettings > Networks** and run the image passing its value after --network:
 
 ```bash
-docker run --network <network-name> go-data-platform/ingestor --name ingestor
+docker run --name ingestor --network <network-name> go-data-platform/ingestor
 ```
