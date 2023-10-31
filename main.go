@@ -5,27 +5,17 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/carlos-medina/go-data-platform/strings"
+
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )
-
-func randStr() string {
-	length := 10
-
-	ran_str := make([]byte, 0)
-
-	for i := 0; i < length; i++ {
-		ran_str = append(ran_str, byte(65+rand.Intn(25)))
-	}
-
-	return string(ran_str)
-}
 
 func main() {
 	c, err := kafka.NewConsumer(&kafka.ConfigMap{
 		// "bootstrap.servers": "localhost:9092", // running locally
 		"bootstrap.servers": "broker:29092", // running on docker
 
-		"group.id":          randStr(),
+		"group.id":          strings.RandStr(rand.Int63(), 10),
 		"auto.offset.reset": "earliest",
 	})
 

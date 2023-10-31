@@ -1,9 +1,9 @@
 FROM golang:1.21.0-alpine3.18 as builder
 RUN apk add alpine-sdk
 WORKDIR /go/app
-COPY main.go /go/app
-COPY go.mod /go/app
-COPY go.sum /go/app
+COPY . /go/app
+# COPY go.mod /go/app
+# COPY go.sum /go/app
 RUN go mod download
 RUN GOOS=linux GOARCH=amd64 go build -o ingestor -tags musl
 
