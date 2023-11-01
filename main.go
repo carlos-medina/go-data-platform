@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/carlos-medina/go-data-platform/endpoint"
 	"github.com/carlos-medina/go-data-platform/strings"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -35,12 +36,18 @@ func main() {
 	for run {
 		msg, err := c.ReadMessage(time.Second)
 		if err == nil {
-			fmt.Printf("Message on %s: %s\n", msg.TopicPartition, string(msg.Value))
+			input, err := endpoint.DecodeInput(msg.Value)
+
+			if err != nil {
+				fmt.Printf("Could not decode message on topic partition: %s\nMessage: %s\nError: %v\n\n", msg.TopicPartition, string(msg.Value), err)
+			} else {
+				fmt.Printf("Message on topic partition: %s\nDecoded Message: %+v\n\n", msg.TopicPartition, input)
+			}
 		} else if !err.(kafka.Error).IsTimeout() {
 			// The client will automatically try to recover from all errors.
 			// Timeout is not considered an error because it is raised by
 			// ReadMessage in absence of messages.
-			fmt.Printf("Consumer error: %v (%v)\n", err, msg)
+			fmt.Printf("Consumer error: %v (%v)\n\n", err, msg)
 		}
 	}
 
