@@ -19,7 +19,7 @@ type Input struct {
 func DecodeInput(inputBytes []byte) (Input, error) {
 	const op = errors.Op("endpoint.DecodeInput")
 
-	input, err := UnmarshalInput(inputBytes)
+	input, err := unmarshalInput(inputBytes)
 
 	if err != nil {
 		return Input{}, errors.E(op, err)
@@ -47,8 +47,8 @@ func DecodeInput(inputBytes []byte) (Input, error) {
 	return input, nil
 }
 
-// UnmarshalInput unmarshal the input in its struct
-func UnmarshalInput(inputBytes []byte) (Input, error) {
+// unmarshalInput unmarshal the input in its struct
+func unmarshalInput(inputBytes []byte) (Input, error) {
 	const op = errors.Op("endpoint.UnmarshalInputData")
 
 	var inputData Input

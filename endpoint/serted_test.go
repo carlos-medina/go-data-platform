@@ -120,7 +120,7 @@ func TestUnmarshalInputData(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			inputData, err := UnmarshalInput(test.inputBytes)
+			inputData, err := unmarshalInput(test.inputBytes)
 			if test.expectedError == "" {
 				assert.NoError(t, err)
 				assert.Equal(t, test.expecteResult, inputData)
