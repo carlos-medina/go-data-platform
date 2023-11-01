@@ -9,6 +9,12 @@ This is a work in progress project. After finished, it will contain the followin
 
 Run a Kafka broker on localhost:9092. One way to do this is running [Confluent Platform's Kafka](https://docs.confluent.io/platform/current/platform-quickstart.html) using docker.
 
+After copying **docker-compose.yaml**, run the command from its folder:
+
+```bash
+docker compose up -d broker
+```
+
 ## Producing input data
 
 Enter Kafka broker's container:
