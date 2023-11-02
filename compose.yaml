@@ -37,6 +37,16 @@ services:
     networks:
       - go-data-platform-network
 
+  db:
+    image: mysql:8.0
+    container_name: mysql
+    env_file:
+      - .env
+    ports:
+      - 3306:3306
+    networks:
+      - go-data-platform-network
+
 networks:
   go-data-platform-network:
     driver: bridge
