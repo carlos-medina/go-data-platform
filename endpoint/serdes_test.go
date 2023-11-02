@@ -10,53 +10,53 @@ import (
 func TestDecodeInput(t *testing.T) {
 	tests := []struct {
 		name          string
-		inputBytes    []byte
-		expecteResult Input
+		input         []byte
+		expecteResult Record
 		expectedError string
 	}{
 		{
 			name:          "Failure: Simple string",
-			inputBytes:    []byte("aldsls"),
+			input:         []byte("aldsls"),
 			expectedError: "invalid character 'a' looking for beginning of value",
 		},
 		{
 			name:          "Failure - Missing UserID",
-			inputBytes:    []byte("{\"data_id\":1,\"version\":1,\"content\":\"soap\"}"),
+			input:         []byte("{\"data_id\":1,\"version\":1,\"content\":\"soap\"}"),
 			expectedError: "Zero value fields: [UserID]",
 		},
 		{
 			name:          "Failure - Missing DataID",
-			inputBytes:    []byte("{\"user_id\":1,\"version\":1,\"content\":\"soap\"}"),
+			input:         []byte("{\"user_id\":1,\"version\":1,\"content\":\"soap\"}"),
 			expectedError: "Zero value fields: [DataID]",
 		},
 		{
 			name:          "Failure - Missing Version",
-			inputBytes:    []byte("{\"user_id\":1,\"data_id\":1,\"content\":\"soap\"}"),
+			input:         []byte("{\"user_id\":1,\"data_id\":1,\"content\":\"soap\"}"),
 			expectedError: "Zero value fields: [Version]",
 		},
 		{
 			name:          "Failure - Missing Content",
-			inputBytes:    []byte("{\"user_id\":1,\"data_id\":1,\"version\":1}"),
+			input:         []byte("{\"user_id\":1,\"data_id\":1,\"version\":1}"),
 			expectedError: "Zero value fields: [Content]",
 		},
 		{
 			name:          "Failure - Missing DataID and Content",
-			inputBytes:    []byte("{\"user_id\":1,\"version\":1}"),
+			input:         []byte("{\"user_id\":1,\"version\":1}"),
 			expectedError: "Zero value fields: [DataID Content]",
 		},
 		{
 			name:          "Failure - Missing all fields",
-			inputBytes:    []byte("{}"),
+			input:         []byte("{}"),
 			expectedError: "Zero value fields: [UserID DataID Version Content]",
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			inputData, err := DecodeInput(test.inputBytes)
+			record, err := DecodeInput(test.input)
 			if test.expectedError == "" {
 				assert.NoError(t, err)
-				assert.Equal(t, test.expecteResult, inputData)
+				assert.Equal(t, test.expecteResult, record)
 			} else {
 				assert.EqualError(t, errors.GetRootErrorWithKV(err), test.expectedError)
 			}
@@ -67,29 +67,29 @@ func TestDecodeInput(t *testing.T) {
 func TestUnmarshalInputData(t *testing.T) {
 	tests := []struct {
 		name          string
-		inputBytes    []byte
-		expecteResult Input
+		input         []byte
+		expecteResult Record
 		expectedError string
 	}{
 		{
 			name:          "Failure: Simple string",
-			inputBytes:    []byte("aldsls"),
+			input:         []byte("aldsls"),
 			expectedError: "invalid character 'a' looking for beginning of value",
 		},
 		{
 			name:          "Failure: Empty string",
-			inputBytes:    []byte(""),
+			input:         []byte(""),
 			expectedError: "unexpected end of JSON input",
 		},
 		{
 			name:          "Failure: Incorrect type int when expected string",
-			inputBytes:    []byte("{\"user_id\":1,\"data_id\":1,\"version\":1,\"content\":1}"),
-			expectedError: "json: cannot unmarshal number into Go struct field Input.content of type string",
+			input:         []byte("{\"user_id\":1,\"data_id\":1,\"version\":1,\"content\":1}"),
+			expectedError: "json: cannot unmarshal number into Go struct field Record.content of type string",
 		},
 		{
-			name:       "Success - Empty map",
-			inputBytes: []byte("{}"),
-			expecteResult: Input{
+			name:  "Success - Empty map",
+			input: []byte("{}"),
+			expecteResult: Record{
 				UserID:  0,
 				DataID:  0,
 				Version: 0,
@@ -97,9 +97,9 @@ func TestUnmarshalInputData(t *testing.T) {
 			},
 		},
 		{
-			name:       "Success - Missing value from key",
-			inputBytes: []byte("{\"user_id\":1,\"data_id\":1,\"version\":1}"),
-			expecteResult: Input{
+			name:  "Success - Missing value from key",
+			input: []byte("{\"user_id\":1,\"data_id\":1,\"version\":1}"),
+			expecteResult: Record{
 				UserID:  1,
 				DataID:  1,
 				Version: 1,
@@ -107,9 +107,9 @@ func TestUnmarshalInputData(t *testing.T) {
 			},
 		},
 		{
-			name:       "Success - All keys have values",
-			inputBytes: []byte("{\"user_id\":1,\"data_id\":1,\"version\":1,\"content\":\"soap\"}"),
-			expecteResult: Input{
+			name:  "Success - All keys have values",
+			input: []byte("{\"user_id\":1,\"data_id\":1,\"version\":1,\"content\":\"soap\"}"),
+			expecteResult: Record{
 				UserID:  1,
 				DataID:  1,
 				Version: 1,
@@ -120,10 +120,10 @@ func TestUnmarshalInputData(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			inputData, err := unmarshalInput(test.inputBytes)
+			record, err := unmarshalInput(test.input)
 			if test.expectedError == "" {
 				assert.NoError(t, err)
-				assert.Equal(t, test.expecteResult, inputData)
+				assert.Equal(t, test.expecteResult, record)
 			} else {
 				assert.EqualError(t, errors.GetRootErrorWithKV(err), test.expectedError)
 			}
