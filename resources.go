@@ -5,6 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/carlos-medina/go-data-platform/endpoint/gateway"
+	"github.com/carlos-medina/go-data-platform/endpoint/service"
 	"github.com/carlos-medina/go-data-platform/strings"
 
 	"github.com/arquivei/foundationkit/errors"
@@ -62,5 +63,13 @@ func MustNewMySQLAdapter() *gateway.MySQLAdapter {
 	return &gateway.MySQLAdapter{
 		DB:    db,
 		Table: "records",
+	}
+}
+
+func MustNewService() *service.IService {
+	mySQLAdapter := MustNewMySQLAdapter()
+
+	return &service.IService{
+		MySQL: mySQLAdapter,
 	}
 }

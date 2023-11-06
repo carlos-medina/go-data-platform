@@ -40,10 +40,8 @@ func (mySQL MySQLAdapter) Get(dataId int) (endpoint.Record, error) {
 
 func (mySQL MySQLAdapter) Insert(r endpoint.Record) error {
 	const op = errors.Op("gateway.MySQLAdapter.Insert")
-	query := fmt.Sprintf("INSERT INTO %v (user_id, data_id, version, content) VALUES (?, ?, ?, ?)", mySQL.Table)
 
-	fmt.Printf("endpoint.Record: %+v \n", r)
-	fmt.Printf("MySQLAdapter: %+v \n", mySQL)
+	query := fmt.Sprintf("INSERT INTO %v (user_id, data_id, version, content) VALUES (?, ?, ?, ?)", mySQL.Table)
 
 	result, err := mySQL.DB.Exec(query, r.UserID, r.DataID, r.Version, r.Content)
 	if err != nil {
