@@ -1,4 +1,8 @@
 {"user_id":1,"data_id":1,"version":1,"content":"soap"}
-{"user_id":1,"data_id":1,"version":2,"content":"shampoo"}
 {"user_id":1,"data_id":2,"version":1,"content":"toothpaste"}
 {"user_id":2,"data_id":3,"version":1,"content":"dental_floss"}
+
+
+// This data is to test the update command
+// It isn't implemented yet
+{"user_id":1,"data_id":1,"version":2,"content":"shampoo"}

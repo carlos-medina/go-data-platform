@@ -11,6 +11,7 @@ import (
 
 func main() {
 	c := MustNewKafkaConsumer()
+	mySQLAdapter := MustNewMySQLAdapter()
 
 	// A signal handler or similar could be used to set this to false to break the loop.
 	run := true
@@ -18,12 +19,19 @@ func main() {
 	for run {
 		msg, err := c.ReadMessage(time.Second)
 		if err == nil {
-			input, err := endpoint.DecodeInput(msg.Value)
+			record, err := endpoint.DecodeInput(msg.Value)
 
 			if err != nil {
-				fmt.Printf("Could not decode message on topic partition: %s\nMessage: %s\nError: %v\n\n", msg.TopicPartition, string(msg.Value), err)
+				fmt.Printf("Could not decode message on partition: %s\nMessage: %s\nError: %v\n\n", msg.TopicPartition, string(msg.Value), err)
 			} else {
-				fmt.Printf("Message on topic partition: %s\nDecoded Message: %+v\n\n", msg.TopicPartition, input)
+				fmt.Printf("Message on partition: %s\nDecoded Message: %+v\n\n", msg.TopicPartition, record)
+
+				err := Service(record, mySQLAdapter)
+				if err != nil {
+					fmt.Printf("Error using service: %v", err)
+				} else {
+					fmt.Printf("Success on processing records!")
+				}
 			}
 		} else if !err.(kafka.Error).IsTimeout() {
 			// The client will automatically try to recover from all errors.

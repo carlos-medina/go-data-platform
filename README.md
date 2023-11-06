@@ -75,6 +75,18 @@ use go_data_platform;
 source /create-table.sql;
 ```
 
+Before runnning ingestor, we must change the **Addr** value in **resources.go > MustNewMySQLAdapter() > cfg**. In order for us to find its correct value, we can inspect it using the command *docker inspect*:
+
+```shell
+docker inspect mysql | grep IPAddress
+```
+
+If our container's IP Adress is, for instance, *172.28.0.2*, we change the value on **Addr** to:
+
+```go
+Addr: "172.28.0.2:3306",
+```
+
 ## Running Ingestor
 
 To run the docker image, the key "bootstrap.servers" on kafka.ConfigMap must have the value "broker:29092" if you are running [Confluent Platform's Kafka](https://docs.confluent.io/platform/current/platform-quickstart.html); more on **KAFKA_LISTENERS** AND **KAFKA__ADVERTISED_LISTENERS** [here](https://stackoverflow.com/questions/61990336/kafka-consumer-failed-to-start-connection-refused-connect2-for-127-0-0-1) and [here](https://rmoff.net/2018/08/02/kafka-listeners-explained/):
