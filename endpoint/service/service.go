@@ -12,7 +12,7 @@ type Service interface {
 }
 
 type IService struct {
-	MySQL *gateway.MySQLAdapter
+	MySQL gateway.MySQLGateway
 }
 
 func (s *IService) Run(record endpoint.Record) error {
