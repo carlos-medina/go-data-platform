@@ -7,4 +7,5 @@ import (
 type MySQLGateway interface {
 	Get(dataId int) (endpoint.Record, error)
 	Insert(endpoint.Record) error
+	Update(endpoint.Record) error
 }
