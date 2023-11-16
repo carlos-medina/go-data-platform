@@ -1,11 +1,23 @@
 # [WIP] go-data-platform
 
-This is a work in progress project. After finished, it will contain the following:
+This data platform has two applications:
 
-- Ingestor: A kafka worker that consumes from a topic, validates its data and persist it in a database;
-- Retriever: A HTTP API that receives a GET request, applies the filter in the query parameter, access the database and returns the data in JSON.
+## Ingestor
+A worker that consumes inputs from a Kafka topic, decodes them, and reads previous entries from the database. If there is not previous data, it persists the record in the database; if there is previous data but its version is greater than the input one, it discards the input; if there is previous data but its version is less than the input one, it updates the record in the database.
+It's currently working, but some refactoring is necessary. The work that must be done is to:
+- Implement endpoint;
+- Implement logging;
+- Read all config from environment variables;
+- Move main, resources and config to cmd;
+- Create tests for the adapter;
 
-## Running a Kafka broker
+## Retriever
+A HTTP API that receives a GET request, applies the filter in the query parameter, access the database and returns the data in JSON.
+It's currently under development.
+
+## How to run the system
+
+### Running a Kafka broker
 
 Run a Kafka broker on localhost:9092 using docker. The one present in this repo was taken from [Confluent Platform's Kafka](https://docs.confluent.io/platform/current/platform-quickstart.html).
 
@@ -13,7 +25,7 @@ Run a Kafka broker on localhost:9092 using docker. The one present in this repo 
 docker compose up -d kafka-broker
 ```
 
-## Producing input data
+### Producing input data
 
 Enter Kafka broker's container:
 
@@ -45,7 +57,7 @@ You can check if the event was produced creating a console consumer:
 kafka-console-consumer --bootstrap-server localhost:9092 --topic input-data --from-beginning
 ```
 
-## Set up the database
+### Set up the database
 
 Running the database:
 
@@ -87,7 +99,7 @@ If our container's IP Adress is, for instance, *172.28.0.2*, we change the value
 Addr: "172.28.0.2:3306",
 ```
 
-## Running Ingestor
+### Running Ingestor
 
 To run the docker image, the key "bootstrap.servers" on kafka.ConfigMap must have the value "broker:29092" if you are running [Confluent Platform's Kafka](https://docs.confluent.io/platform/current/platform-quickstart.html); more on **KAFKA_LISTENERS** AND **KAFKA__ADVERTISED_LISTENERS** [here](https://stackoverflow.com/questions/61990336/kafka-consumer-failed-to-start-connection-refused-connect2-for-127-0-0-1) and [here](https://rmoff.net/2018/08/02/kafka-listeners-explained/):
 
