@@ -1,7 +1,7 @@
 package gateway
 
 import (
-	"github.com/carlos-medina/go-data-platform/endpoint"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint"
 )
 
 type MySQLGateway interface {

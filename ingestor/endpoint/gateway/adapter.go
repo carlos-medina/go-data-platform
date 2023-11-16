@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/carlos-medina/go-data-platform/endpoint"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint"
 
 	"github.com/arquivei/foundationkit/errors"
 )

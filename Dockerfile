@@ -3,9 +3,9 @@ RUN apk add alpine-sdk
 WORKDIR /go/app
 COPY . /go/app
 RUN go mod download
-RUN GOOS=linux GOARCH=amd64 go build -o ingestor -tags musl
+RUN GOOS=linux GOARCH=amd64 go build -C cmd/ingestor -o ingestor -tags musl
 
 FROM alpine:latest as runner
 WORKDIR /go/app
-COPY --from=builder /go/app/ingestor .
+COPY --from=builder /go/app/cmd/ingestor/ingestor .
 ENTRYPOINT ./ingestor

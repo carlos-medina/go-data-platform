@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/carlos-medina/go-data-platform/endpoint"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint"
 
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 )

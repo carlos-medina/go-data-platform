@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/carlos-medina/go-data-platform/endpoint"
-	"github.com/carlos-medina/go-data-platform/endpoint/gateway"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint/gateway"
 
 	"github.com/arquivei/foundationkit/errors"
 )

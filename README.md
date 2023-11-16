@@ -8,7 +8,6 @@ It's currently working, but some refactoring is necessary. The work that must be
 - Implement endpoint;
 - Implement logging;
 - Read all config from environment variables;
-- Move main, resources and config to cmd;
 - Create tests for the adapter;
 
 ## Retriever

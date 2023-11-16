@@ -4,9 +4,9 @@ import (
 	"database/sql"
 	"math/rand"
 
-	"github.com/carlos-medina/go-data-platform/endpoint/gateway"
-	"github.com/carlos-medina/go-data-platform/endpoint/service"
-	"github.com/carlos-medina/go-data-platform/strings"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint/gateway"
+	"github.com/carlos-medina/go-data-platform/ingestor/endpoint/service"
+	"github.com/carlos-medina/go-data-platform/ingestor/strings"
 
 	"github.com/arquivei/foundationkit/errors"
 	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
@@ -44,7 +44,7 @@ func MustNewMySQLAdapter() *gateway.MySQLAdapter {
 		User:   "root",
 		Passwd: "admin",
 		Net:    "tcp",
-		Addr:   "172.19.0.2:3306",
+		Addr:   "172.18.0.3:3306",
 		DBName: "go_data_platform",
 	}
 
