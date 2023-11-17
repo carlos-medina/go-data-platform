@@ -32,7 +32,7 @@ services:
   ingestor:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ingestor.dockerfile
     container_name: ingestor
     networks:
       - go-data-platform-network
