@@ -5,6 +5,7 @@ This data platform has two applications:
 ## Ingestor
 A worker that consumes inputs from a Kafka topic, decodes them, and reads previous entries from the database. If there is not previous data, it persists the record in the database; if there is previous data but its version is greater than the input one, it discards the input; if there is previous data but its version is less than the input one, it updates the record in the database.
 It's currently working, but some refactoring is necessary. The work that must be done is to:
+- Read all config from environment variables;
 - Implement endpoint;
 - Implement logging;
 - Read all config from environment variables;
@@ -85,6 +86,8 @@ create database go_data_platform;
 use go_data_platform;
 source /create-table.sql;
 ```
+
+### Running Ingestor
 
 Before runnning ingestor, we must change the **Addr** value in **resources.go > MustNewMySQLAdapter() > cfg**. In order for us to find its correct value, we can inspect it using the command *docker inspect*:
 
