@@ -6,6 +6,7 @@ require (
 	github.com/arquivei/foundationkit v0.5.0
 	github.com/confluentinc/confluent-kafka-go/v2 v2.3.0
 	github.com/go-sql-driver/mysql v1.7.1
+	github.com/gorilla/mux v1.8.0
 	github.com/stretchr/testify v1.8.4
 )
 

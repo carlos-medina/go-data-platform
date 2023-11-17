@@ -6,13 +6,21 @@ This data platform has two applications:
 A worker that consumes inputs from a Kafka topic, decodes them, and reads previous entries from the database. If there is not previous data, it persists the record in the database; if there is previous data but its version is greater than the input one, it discards the input; if there is previous data but its version is less than the input one, it updates the record in the database.
 It's currently working, but some refactoring is necessary. The work that must be done is to:
 - Read all config from environment variables;
+- The database ip address in our docker network is being set dynamically. It should be static, so we don't have to change both ingestor's and retriever's configs everytime the database ip changes
 - Implement endpoint;
 - Implement logging;
 - Create tests for the adapter;
 
 ## Retriever
 A HTTP API that receives a GET request, applies the filter in the query parameter, access the database and returns the data in JSON.
-It's currently under development.
+It's currently working, but some refactoring is necessary. The work that must be done is to:
+- Remove the panics from main and return in the response an appropriate message with the current error;
+- Read all config from environment variables;
+- The database ip address in our docker network is being set dynamically. It should be static, so we don't have to change both ingestor's and retriever's configs everytime the database ip changes;
+- Implement endpoint;
+- Implement service;
+- Implement logging;
+- Create tests for the adapter;
 
 ## How to run the system
 
@@ -106,4 +114,29 @@ Running the ingestor:
 
 ```bash
 docker compose up ingestor
+```
+
+### Running Retriever
+
+Identical to Ingestor, we must change the **Addr** value in **cmd/retriever/resources.go > MustNewMySQLAdapter() > cfg**. In order for us to find its correct value, we can inspect it using the command *docker inspect*:
+
+```shell
+docker inspect mysql | grep IPAddress
+```
+
+If our container's IP Address is, for instance, *172.28.0.2*, we change the value on **Addr** to:
+
+```go
+Addr: "172.28.0.2:3306",
+```
+
+Running the retriever:
+
+```bash
+docker compose up ingestor
+```
+
+Sending a request to the retriever:
+```bash
+curl http://localhost:8080/records?data_id=1
 ```

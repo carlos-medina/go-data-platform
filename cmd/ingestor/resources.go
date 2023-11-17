@@ -44,7 +44,7 @@ func MustNewMySQLAdapter() *gateway.MySQLAdapter {
 		User:   "root",
 		Passwd: "admin",
 		Net:    "tcp",
-		Addr:   "172.18.0.3:3306",
+		Addr:   "172.18.0.2:3306",
 		DBName: "go_data_platform",
 	}
 

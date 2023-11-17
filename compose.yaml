@@ -37,6 +37,16 @@ services:
     networks:
       - go-data-platform-network
 
+  retriever:
+    build:
+      context: .
+      dockerfile: retriever.dockerfile
+    container_name: retriever
+    ports:
+      - "8080:8080"
+    networks:
+      - go-data-platform-network
+
   db:
     image: mysql:8.0
     container_name: mysql
