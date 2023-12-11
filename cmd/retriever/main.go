@@ -5,58 +5,90 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/carlos-medina/go-data-platform/retriever/endpoint/gateway"
+	"github.com/carlos-medina/go-data-platform/retriever/endpoint"
 
 	"github.com/arquivei/foundationkit/errors"
 	"github.com/gorilla/mux"
 )
 
+type Response struct {
+	UserID  int    `json:"user_id"`
+	DataID  int    `json:"data_id"`
+	Version int    `json:"version"`
+	Content string `json:"content"`
+}
+
 func main() {
-	mySQLAdapter := MustNewMySQLAdapter()
+	endpoint := MustNewEndpoint()
 
 	r := mux.NewRouter()
-	r.HandleFunc("/records", getHandleRecords(mySQLAdapter)).Methods("GET")
+	r.HandleFunc("/records", getHandleRecords(endpoint)).Methods("GET")
 
 	http.ListenAndServe(":8080", r)
 }
 
-func getHandleRecords(mySQLAdapter *gateway.MySQLAdapter) http.HandlerFunc {
+func getHandleRecords(endpoint endpoint.Endpoint) http.HandlerFunc {
 	fn := func(w http.ResponseWriter, r *http.Request) {
 		const op = errors.Op("main.getHandleRecords")
-		dataIdStr := r.URL.Query().Get("data_id")
 
-		// TODO: prints on screen that data filter must be provided
-		if dataIdStr == "" {
-			panic(errors.E(op, "filter data_id not provided"))
-		}
+		endpointRequest, err := translateRequest(r)
 
-		dataId, err := strconv.Atoi(dataIdStr)
-
-		// TODO: prints on screen that data must be a valid integer
+		// TODO: print on screen a valid error for the user
 		if err != nil {
 			panic(errors.E(op, err))
 		}
 
-		record, err := mySQLAdapter.GetByDataId(dataId)
+		endpointResponse, err := endpoint.Run(endpointRequest)
 
-		// TODO: prints on screen that record was not found
+		// TODO: print on screen a valid error for the user
 		if err != nil {
 			panic(errors.E(op, err))
 		}
 
-		response, err := json.Marshal(record)
+		response := translateResponse(endpointResponse)
 
-		// TODO: prints on screen that response could not be encoded
+		jsonResponse, err := json.Marshal(response)
+
+		// TODO: print on screen a valid error for the user
 		if err != nil {
 			panic(errors.E(op, err))
 		}
 
-		_, err = w.Write(response)
+		_, err = w.Write(jsonResponse)
 
+		// TODO: print on screen a valid error for the userS
 		if err != nil {
 			panic(errors.E(op, err))
 		}
 	}
 
 	return fn
+}
+
+func translateRequest(r *http.Request) (endpoint.Request, error) {
+	const op = errors.Op("main.translateRequest")
+	dataIdStr := r.URL.Query().Get("data_id")
+
+	if dataIdStr == "" {
+		return endpoint.Request{}, errors.E(op, "Filter data_id must be provided")
+	}
+
+	dataId, err := strconv.Atoi(dataIdStr)
+
+	if err != nil {
+		return endpoint.Request{}, errors.E(op, err)
+	}
+
+	return endpoint.Request{
+		DataId: dataId,
+	}, nil
+}
+
+func translateResponse(endpointResponse endpoint.Response) Response {
+	return Response{
+		UserID:  endpointResponse.UserID,
+		DataID:  endpointResponse.DataID,
+		Version: endpointResponse.Version,
+		Content: endpointResponse.Content,
+	}
 }

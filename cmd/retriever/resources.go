@@ -3,13 +3,14 @@ package main
 import (
 	"database/sql"
 
-	"github.com/carlos-medina/go-data-platform/retriever/endpoint/gateway"
+	"github.com/carlos-medina/go-data-platform/retriever/endpoint"
+	"github.com/carlos-medina/go-data-platform/retriever/endpoint/service"
 
 	"github.com/arquivei/foundationkit/errors"
 	"github.com/go-sql-driver/mysql"
 )
 
-func MustNewMySQLAdapter() *gateway.MySQLAdapter {
+func MustNewMySQLAdapter() *service.MySQLAdapter {
 	const op = errors.Op("main.MustNewMySQLAdapter")
 
 	cfg := mysql.Config{
@@ -32,8 +33,24 @@ func MustNewMySQLAdapter() *gateway.MySQLAdapter {
 		panic(errors.E(op, err))
 	}
 
-	return &gateway.MySQLAdapter{
+	return &service.MySQLAdapter{
 		DB:    db,
 		Table: "records",
+	}
+}
+
+func MustNewService() *service.RetrieverService {
+	mySQLAdapter := MustNewMySQLAdapter()
+
+	return &service.RetrieverService{
+		MySQL: mySQLAdapter,
+	}
+}
+
+func MustNewEndpoint() *endpoint.RetrieverEndpoint {
+	service := MustNewService()
+
+	return &endpoint.RetrieverEndpoint{
+		Service: service,
 	}
 }

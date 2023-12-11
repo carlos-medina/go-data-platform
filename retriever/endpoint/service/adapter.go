@@ -1,10 +1,8 @@
-package gateway
+package service
 
 import (
 	"database/sql"
 	"fmt"
-
-	"github.com/carlos-medina/go-data-platform/retriever/endpoint"
 
 	"github.com/arquivei/foundationkit/errors"
 )
@@ -23,18 +21,18 @@ type MySQLAdapter struct {
 	Table string
 }
 
-func (mySQL MySQLAdapter) GetByDataId(dataId int) (endpoint.Record, error) {
+func (mySQL MySQLAdapter) GetByDataId(dataId int) (Response, error) {
 	const op = errors.Op("gateway.MySQLAdapter.GetByDataId")
 	query := fmt.Sprintf("SELECT user_id, data_id, version, content FROM %v WHERE data_id = ?", mySQL.Table)
-	var record endpoint.Record
+	var response Response
 
 	row := mySQL.DB.QueryRow(query, dataId)
-	if err := row.Scan(&record.UserID, &record.DataID, &record.Version, &record.Content); err != nil {
+	if err := row.Scan(&response.UserID, &response.DataID, &response.Version, &response.Content); err != nil {
 		if err == sql.ErrNoRows {
-			return record, errors.E(op, err)
+			return response, errors.E(op, err)
 		}
-		return record, errors.E(op, err)
+		return response, errors.E(op, err)
 	}
 
-	return record, nil
+	return response, nil
 }

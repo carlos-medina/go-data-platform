@@ -133,7 +133,7 @@ Addr: "172.28.0.2:3306",
 Running the retriever:
 
 ```bash
-docker compose up ingestor
+docker compose up retriever
 ```
 
 Sending a request to the retriever:
